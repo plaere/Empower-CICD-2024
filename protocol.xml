@@ -19,6 +19,32 @@
 	</Compliancies>
 
 	<Params>
+		<Param id="1" trending="false">
+			<Name>MyString</Name>
+			<Description>My String</Description>
+			<Type>read</Type>
+			<Information>
+				<Subtext>My String</Subtext>
+			</Information>
+			<Interprete>
+				<RawType>other</RawType>
+				<Type>string</Type>
+				<LengthType>next param</LengthType>
+			</Interprete>
+			<Display>
+				<RTDisplay>true</RTDisplay>
+				<Positions>
+					<Position>
+						<Page>General</Page>
+						<Column>0</Column>
+						<Row>0</Row>
+					</Position>
+				</Positions>
+			</Display>
+			<Measurement>
+				<Type>string</Type>
+			</Measurement>
+		</Param>		
 		<Param id="2">
 			<Name>AfterStartup</Name>
 			<Description>After Startup</Description>
