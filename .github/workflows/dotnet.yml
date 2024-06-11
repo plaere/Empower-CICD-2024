@@ -10,10 +10,8 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
-
+  CI:
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v4
     - name: Setup .NET
@@ -51,6 +49,28 @@ jobs:
         major=$(echo "$json" | jq -r '.MajorIssueCount')
 
         if [ "$critical" != "0" ] || [ "$major" != "0" ]; then
-          echo "Error: CriticalIssueCount or MajorIssueCount is not 0"
+          echo "Error: CriticalIssueCount or MajorIssueCount is not 0"          
           exit 1
         fi
+  CD:
+    runs-on: windows-latest
+    # CI is the name of the previous job. If the CI job fails, then this job will not be executed.
+    needs: CI
+    steps:
+    - uses: actions/checkout@v4
+  
+    # Install the Packager .NET tool so we can create a dmprotocol package from the connector solution.
+    - name: Install Package Creation
+      run: dotnet tool install -g Skyline.DataMiner.CICD.Tools.Packager
+
+    # Run the Packager .NET tool to create a dmprotocol package.
+    - name: Create Protocol Package
+      run: dataminer-package-create dmprotocol "${{ github.workspace }}" --name "protocol" --output "${{ github.workspace }}\\_PackageResults"
+
+    # Archive the dmprotocol package so you can access it via the UI.
+    - name: Archive Package
+      if: success()
+      uses: actions/upload-artifact@v4
+      with:
+        name: packageResults
+        path: ${{ github.workspace }}\\_PackageResults\\*
